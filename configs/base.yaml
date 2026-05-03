@@ -1,0 +1,10 @@
+seed: 42
+dataset:
+  name: "audio_benchmark"
+  version: "1.0.0"
+  sample_rate: 22050
+  clip_duration_seconds: 1.0
+paths:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  results_dir: "results"
