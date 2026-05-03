@@ -1,4 +1,4 @@
-.PHONY: setup download prepare inventory features clean all
+.PHONY: setup download prepare inventory features embeddings clean all
 
 setup:
 	uv sync
@@ -15,11 +15,15 @@ inventory: prepare
 features:
 	uv run scripts/extract_physics_features.py
 
+embeddings:
+	uv run scripts/extract_embeddings.py --model all
+
 clean:
 	rm -rf data/raw/*
 	rm -rf data/processed/*
 	rm -rf results/step0/*
 	rm -rf results/step1/*
+	rm -rf results/step2/*
 	rm -rf .venv
 
-all: setup download inventory features
+all: setup download inventory features embeddings

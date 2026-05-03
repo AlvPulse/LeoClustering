@@ -1,0 +1,14 @@
+models/
+data/raw/
+data/processed/
+results/
+__pycache__/
+.pytest_cache/
+temp_*.pkl
+.venv
+*.pyc
+*.wav
+*.json
+*.md
+*.png
+*.parquet
