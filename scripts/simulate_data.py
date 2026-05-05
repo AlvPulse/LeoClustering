@@ -68,10 +68,17 @@ def main():
         ds_processed_dir = processed_dir / ds
         ds_processed_dir.mkdir(parents=True, exist_ok=True)
 
-        classes = ["bird", "wind", "rare_animal"]
+        # Increase to 100 clips so we have a meaningful split and multiple rare animal instances
+        total_clips = 100
 
-        for i in range(20):
-            label = "rare_animal" if i == 0 else ("bird" if i % 2 == 0 else "wind")
+        for i in range(total_clips):
+            # Rare class (2%), bird (49%), wind (49%)
+            if i < 2:
+                label = "rare_animal"
+            elif i % 2 == 0:
+                label = "bird"
+            else:
+                label = "wind"
 
             if label == "bird":
                 audio = generate_tone(4000, clip_dur, sr)
@@ -87,6 +94,17 @@ def main():
             clip_id_str = f"{file_name}_0.0_{clip_dur}"
             clip_id = hashlib.sha256(clip_id_str.encode()).hexdigest()[:16]
 
+            # Split logic: 70/20/10 roughly deterministic
+            # To ensure representation, first of each goes to test, second to train, etc.
+            # Using random choice per class
+            rand_val = np.random.rand()
+            if rand_val < 0.7:
+                split = "train"
+            elif rand_val < 0.9:
+                split = "val"
+            else:
+                split = "test"
+
             manifest_data.append({
                 "clip_id": clip_id,
                 "dataset": ds,
@@ -95,7 +113,7 @@ def main():
                 "duration_seconds": clip_dur,
                 "sample_rate": sr,
                 "label": label,
-                "split": "train"
+                "split": split
             })
 
             class_counts[label] = class_counts.get(label, 0) + 1
@@ -105,14 +123,24 @@ def main():
             snr_estimates.setdefault(label, []).append(snr)
 
         manifest_df = pd.DataFrame(manifest_data)
+
+        # Ensure at least 1 rare animal in test and train manually if missed
+        rare_mask = manifest_df['label'] == 'rare_animal'
+        if not (manifest_df.loc[rare_mask, 'split'] == 'test').any():
+            rare_indices = manifest_df[rare_mask].index
+            if len(rare_indices) > 0: manifest_df.loc[rare_indices[0], 'split'] = 'test'
+        if not (manifest_df.loc[rare_mask, 'split'] == 'train').any():
+            rare_indices = manifest_df[rare_mask].index
+            if len(rare_indices) > 1: manifest_df.loc[rare_indices[1], 'split'] = 'train'
+
         manifest_path = ds_processed_dir / "dataset_manifest.csv"
         manifest_df.to_csv(manifest_path, index=False)
-        print(f"Generated {manifest_path}")
+        print(f"Generated {manifest_path} with {len(manifest_df)} clips.")
 
         inventory = {
             "per_class_clip_counts": class_counts,
             "per_class_total_duration": total_duration,
-            "sample_rate_distribution": {str(sr): 20},
+            "sample_rate_distribution": {str(sr): total_clips},
             "clip_duration_distribution": {
                 "min": clip_dur, "median": clip_dur, "max": clip_dur
             },

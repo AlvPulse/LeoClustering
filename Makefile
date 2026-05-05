@@ -1,4 +1,4 @@
-.PHONY: setup download prepare inventory features embeddings clean all
+.PHONY: setup download prepare inventory features embeddings clustering clean all
 
 setup:
 	uv sync
@@ -18,12 +18,16 @@ features:
 embeddings:
 	uv run scripts/extract_embeddings.py --model all
 
+clustering:
+	uv run scripts/run_clustering_benchmark.py --n_jobs -1
+
 clean:
 	rm -rf data/raw/*
 	rm -rf data/processed/*
 	rm -rf results/step0/*
 	rm -rf results/step1/*
 	rm -rf results/step2/*
+	rm -rf results/step3/*
 	rm -rf .venv
 
-all: setup download inventory features embeddings
+all: setup download inventory features embeddings clustering
