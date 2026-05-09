@@ -1,0 +1,11 @@
+fewshot:
+  n_exemplars: [1, 5, 10, 25, 50]
+  repetitions: 10
+  methods:
+    prototype: {}
+    knn_1: { n_neighbors: 1 }
+    knn_3: { n_neighbors: 3 }
+    knn_5: { n_neighbors: 5 }
+    mahalanobis: { max_pca_components: 64 }
+    ocsvm: { kernel: "rbf", gamma: "scale" } # scale uses 1 / (n_features * X.var()) as a standard robust heuristic
+    logistic_regression: { c_reg: 1.0, max_iter: 1000, negative_ratio: 10 }

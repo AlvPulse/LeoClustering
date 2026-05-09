@@ -1,0 +1,14 @@
+demo:
+  default_features:
+    - dominant_frequency_hz
+    - spectral_centroid_hz
+    - snr_db
+    - harmonic_to_noise_ratio_db
+    - clip_duration_seconds
+    - syllable_rate_hz
+    - low_high_power_ratio_db
+  umap:
+    n_neighbors: 15
+    min_dist: 0.1
+    metric: cosine
+  max_points_render: 5000

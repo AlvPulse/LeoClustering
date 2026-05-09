@@ -1,4 +1,4 @@
-.PHONY: setup download prepare inventory features embeddings clustering clean all
+.PHONY: setup download prepare inventory features embeddings clustering fewshot demo clean all
 
 setup:
 	uv sync
@@ -21,6 +21,12 @@ embeddings:
 clustering:
 	uv run scripts/run_clustering_benchmark.py --n_jobs -1
 
+fewshot:
+	uv run scripts/run_fewshot_benchmark.py --n_jobs -1
+
+demo:
+	uv run streamlit run scripts/run_demo_app.py
+
 clean:
 	rm -rf data/raw/*
 	rm -rf data/processed/*
@@ -28,6 +34,8 @@ clean:
 	rm -rf results/step1/*
 	rm -rf results/step2/*
 	rm -rf results/step3/*
+	rm -rf results/step4/*
+	rm -rf results/step6/*
 	rm -rf .venv
 
-all: setup download inventory features embeddings clustering
+all: setup download inventory features embeddings clustering fewshot demo
