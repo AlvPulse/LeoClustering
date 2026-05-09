@@ -39,3 +39,7 @@ clean:
 	rm -rf .venv
 
 all: setup download inventory features embeddings clustering fewshot demo
+report:
+	@echo "Generating synthesis reports..."
+	uv run python scripts/build_report.py
+all: setup simulate run_all report

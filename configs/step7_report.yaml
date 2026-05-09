@@ -1,0 +1,11 @@
+report:
+  target_pages: "20-30"
+  interpretability_thresholds:
+    acceptable_gap_percentage: 5
+    marginal_gap_percentage: 10
+  mechanistic_heuristics:
+    birdnet_success: "BirdNET isolates avian vocalizations accurately because it relies on bioacoustic-specific contrastive representation objectives, unlike broad-domain embeddings."
+    hdbscan_success: "HDBSCAN preserves rare classes successfully because density-based clustering models local manifold shape rather than enforcing rigid global centroid geometry like k-Means."
+    physics_isolation: "Physics features effectively isolate this class due to its distinct low-frequency tonal signature separating clearly from broadband background noise."
+    online_kmeans_failure: "Online k-Means absorbs sparse rare classes because it forces distance minimization into a predefined K-budget without density-based noise rejection thresholds."
+    mahalanobis_small_n_failure: "Mahalanobis scoring fails at small N due to mathematically unstable covariance estimation resulting in singular matrices before aggressive shrinkage."
